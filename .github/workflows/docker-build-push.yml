@@ -26,8 +26,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./docker
-          file: ./docker/Dockerfile.v2
+          file: ./docker/Dockerfile
           push: true
           tags: kaspamontana/ugc-faceswapper:v2,kaspamontana/ugc-faceswapper:latest
           cache-from: type=registry,ref=kaspamontana/ugc-faceswapper:buildcache
           cache-to: type=registry,ref=kaspamontana/ugc-faceswapper:buildcache,mode=max
+          platforms: linux/amd64
