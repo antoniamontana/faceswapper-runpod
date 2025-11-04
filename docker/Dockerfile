@@ -5,13 +5,20 @@ FROM --platform=linux/amd64 nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 
-# Single apt-get with all packages - simpler is better
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get update || true && \
-    apt-get install -y python3 python3-pip python3-dev build-essential ffmpeg git wget curl || \
-    apt-get install -y --fix-missing python3 python3-pip python3-dev build-essential ffmpeg git wget curl || \
-    (echo "apt failed, continuing anyway" && exit 0) && \
+# Install packages with retries and better error handling
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    for i in 1 2 3; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends \
+            python3 python3-pip python3-dev \
+            build-essential \
+            ffmpeg \
+            git \
+            wget \
+            curl \
+            ca-certificates && \
+        break || sleep 10; \
+    done && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
