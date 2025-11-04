@@ -1,0 +1,82 @@
+# UGC Face Swapper V1 MVP - Configuration
+# ⚠️ NEVER commit this file to Git after filling in credentials
+# Copy to config.yaml and replace all YOUR_XXX placeholders
+
+# ============================================
+# AWS S3 Storage Configuration
+# ============================================
+storage:
+  provider: "s3"
+  s3_bucket: "YOUR_BUCKET_NAME"           # From setup step 1.2 (e.g., "faceswap-outputs-john")
+  s3_region: "us-east-1"                  # Keep as us-east-1 unless you chose different region
+  s3_access_key: "YOUR_S3_ACCESS_KEY"     # Access Key ID from step 1.2
+  s3_secret_key: "YOUR_S3_SECRET_KEY"     # Secret Access Key from step 1.2
+  s3_output_prefix: "outputs/"            # Folder path within bucket for videos
+
+# ============================================
+# Airtable Database Configuration
+# ============================================
+airtable:
+  api_key: "YOUR_AIRTABLE_TOKEN"          # Token from step 1.1 (starts with "pat")
+  base_id: "YOUR_BASE_ID"                 # Base ID from step 2.4 (starts with "app")
+  table_name: "Processing Queue"          # Exact table name (case-sensitive)
+
+# ============================================
+# Webhook Configuration
+# ============================================
+webhook:
+  completion_url: "YOUR_WEBHOOK_URL"      # Webhook URL from step 3.1 (Make.com webhook)
+
+# ============================================
+# Video Processing Configuration
+# ============================================
+processing:
+  # Hardcoded segment timestamps (DO NOT CHANGE for V1 MVP)
+  segments:
+    swap_1_start: 0      # Start of first face-swap segment (seconds)
+    swap_1_end: 5        # End of first face-swap segment
+    original_1_start: 5  # Start of first product demo segment
+    original_1_end: 15   # End of first product demo segment
+    swap_2_start: 15     # Start of second face-swap segment
+    swap_2_end: 20       # End of second face-swap segment
+    original_2_start: 20 # Start of second product demo segment
+    original_2_end: 30   # End of second product demo segment (total: 30 seconds)
+
+  # Model configuration
+  model_path: "/models/wan2.2-animate"    # Path inside Docker container (pre-installed)
+  model_name: "wan2.2-animate-14b"        # Model version
+
+  # Output settings
+  output_resolution: "1080p"              # Output video resolution (downscale if source is higher)
+  output_fps: 30                          # Frames per second
+  output_codec: "libx264"                 # Video codec
+  output_bitrate: "3500k"                 # Video bitrate
+
+  # Face detection
+  face_detection_confidence: 0.6          # Confidence threshold (0.0-1.0, lower = more lenient)
+  face_detection_backend: "retinaface"    # Face detection model
+
+# ============================================
+# Error Handling Configuration
+# ============================================
+error_handling:
+  max_retries: 0                          # No automatic retries for V1 MVP
+  timeout_seconds: 900                    # 15 minutes max processing time
+  failed_status_emoji: "🚩"               # Emoji to prepend to Failed status
+
+# ============================================
+# Logging Configuration
+# ============================================
+logging:
+  level: "INFO"                           # DEBUG, INFO, WARNING, ERROR
+  format: "json"                          # json or text
+  include_timestamps: true
+
+# ============================================
+# GPU Configuration (for reference)
+# ============================================
+# These settings are managed by Runpod, not this config file:
+# - GPU Type: NVIDIA A40 (24GB VRAM)
+# - CUDA Version: 11.8
+# - PyTorch Version: 2.1.0
+# - Container: Custom Docker image with Wan2.2-Animate pre-installed

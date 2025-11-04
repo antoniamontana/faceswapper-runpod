@@ -1,0 +1,92 @@
+# UGC Face Swapper V1 MVP - Configuration
+# ⚠️ NEVER commit this file to Git (already in .gitignore)
+
+# ============================================
+# Runpod GPU Configuration
+# ============================================
+runpod:
+  api_key: "rpa_OSPY0BMF92K6JKMWOTMIJ6EJQHCY3FVNJBJBGEKM1td0zk"
+  template_id: "w5a7rfn9y1"  # Created successfully on 2025-11-01
+  endpoint_id: "eaj61xejeec2iw"  # Serverless endpoint created 2025-11-01
+  endpoint_url: "https://api.runpod.ai/v2/eaj61xejeec2iw/run"
+
+# ============================================
+
+# ============================================
+# AWS S3 Storage Configuration
+# ============================================
+storage:
+  provider: "s3"
+  s3_bucket: "faceswap-outputs-kasparas"
+  s3_region: "us-east-1"
+  s3_access_key: "AKIAQPFMTVPPQLCI6X3X"
+  s3_secret_key: "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"
+  s3_output_prefix: "outputs/"
+
+# ============================================
+# Airtable Database Configuration
+# ============================================
+airtable:
+  api_key: "patlwJxGENTnKmGeF.48b68649086330d63c1496993b1fd91697eb7f41bc5887d08a00e45c63845395"
+  base_id: "appHjohuWApnPJvd3"
+  table_name: "Processing Queue"
+
+# ============================================
+# Webhook Configuration
+# ============================================
+webhook:
+  completion_url: "https://hook.eu2.make.com/nckpkeky1n2utqu5mp4lu48ikfgxkovy"
+
+# ============================================
+# Video Processing Configuration
+# ============================================
+processing:
+  # Hardcoded segment timestamps (DO NOT CHANGE for V1 MVP)
+  segments:
+    swap_1_start: 0      # Start of first face-swap segment (seconds)
+    swap_1_end: 5        # End of first face-swap segment
+    original_1_start: 5  # Start of first product demo segment
+    original_1_end: 15   # End of first product demo segment
+    swap_2_start: 15     # Start of second face-swap segment
+    swap_2_end: 20       # End of second face-swap segment
+    original_2_start: 20 # Start of second product demo segment
+    original_2_end: 30   # End of second product demo segment (total: 30 seconds)
+
+  # Model configuration
+  model_path: "/models/wan2.2-animate"    # Path inside Docker container (pre-installed)
+  model_name: "wan2.2-animate-14b"        # Model version
+
+  # Output settings
+  output_resolution: "1080p"              # Output video resolution (downscale if source is higher)
+  output_fps: 30                          # Frames per second
+  output_codec: "libx264"                 # Video codec
+  output_bitrate: "3500k"                 # Video bitrate
+
+  # Face detection
+  face_detection_confidence: 0.6          # Confidence threshold (0.0-1.0, lower = more lenient)
+  face_detection_backend: "retinaface"    # Face detection model
+
+# ============================================
+# Error Handling Configuration
+# ============================================
+error_handling:
+  max_retries: 0                          # No automatic retries for V1 MVP
+  timeout_seconds: 900                    # 15 minutes max processing time
+  failed_status_emoji: "🚩"               # Emoji to prepend to Failed status
+
+# ============================================
+# Logging Configuration
+# ============================================
+logging:
+  level: "INFO"                           # DEBUG, INFO, WARNING, ERROR
+  format: "json"                          # json or text
+  include_timestamps: true
+
+# ============================================
+# GPU Configuration (for reference)
+# ============================================
+# These settings are managed by Runpod, not this config file:
+# - GPU Type: NVIDIA A40 (24GB VRAM)
+# - CUDA Version: 11.8
+# - PyTorch Version: 2.1.0
+# - Container: Custom Docker image with Wan2.2-Animate pre-installed

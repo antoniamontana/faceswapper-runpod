@@ -1,0 +1,22 @@
+{
+  "id": "project-overview",
+  "started": "2025-10-30T10:44:00Z",
+  "lastUpdated": "2025-10-30T10:46:00Z",
+  "status": "active",
+  "phase": "complete",
+  "progress": {
+    "discovery": { "answered": 5, "total": 5 },
+    "detail": { "answered": 5, "total": 5 }
+  },
+  "contextFiles": [
+    "/Users/kasparas/Library/Mobile Documents/com~apple~CloudDocs/dev/2025/faceswapper-20251030/UGC_FaceSwapper_Enhanced_SOP.md",
+    "/Users/kasparas/Library/Mobile Documents/com~apple~CloudDocs/dev/2025/faceswapper-20251030/UGC_FaceSwapper_MVP_SOP.md"
+  ],
+  "relatedFeatures": [
+    "Airtable Processing Queue",
+    "Make.com Automation",
+    "Runpod GPU Processing",
+    "AWS S3 Storage",
+    "Wan2.2-Animate Face Swap"
+  ]
+}
