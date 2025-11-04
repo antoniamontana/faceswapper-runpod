@@ -4,7 +4,7 @@ Receives requests from Make.com and processes face-swap videos
 """
 
 import runpod
-import yaml
+import os
 import logging
 import traceback
 from process import process_video_job
@@ -20,6 +20,26 @@ logger = logging.getLogger(__name__)
 CONFIG = {
     'webhook': {
         'completion_url': None  # Will use webhook_url from event
+    },
+    'processing': {
+        'segments': {
+            'swap_1_start': 0,
+            'swap_1_end': 5,
+            'original_1_start': 5,
+            'original_1_end': 15,
+            'swap_2_start': 15,
+            'swap_2_end': 20,
+            'original_2_start': 20,
+            'original_2_end': 30
+        },
+        'model_path': os.environ.get('MODEL_PATH', '/runpod-volume/models/Wan2.2-Animate-14B')
+    },
+    'storage': {
+        's3_access_key': os.environ.get('AWS_ACCESS_KEY_ID'),
+        's3_secret_key': os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        's3_region': os.environ.get('AWS_REGION', 'eu-north-1'),
+        's3_bucket': os.environ.get('S3_BUCKET', 'faceswap-outputs-kasparas'),
+        's3_output_prefix': os.environ.get('S3_OUTPUT_PREFIX', 'outputs/')
     }
 }
 logger.info("Handler initialized - config comes from event/env vars")
