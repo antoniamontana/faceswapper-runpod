@@ -1,0 +1,77 @@
+========================================
+  FACE SWAPPER RUNPOD DEPLOYMENT
+  QUICK START GUIDE
+========================================
+
+STATUS: READY TO DEPLOY
+------------------------
+All code is configured and committed to git.
+Local Docker push failed → Using GitHub Actions instead.
+
+DEPLOY NOW (15 min setup + 90 min build):
+------------------------------------------
+
+1. CREATE GITHUB REPO (5 min)
+
+   Go to: https://github.com/new
+   Name: faceswapper-runpod
+   Type: Private
+   Click "Create repository"
+
+   Then run:
+   cd "/Users/kasparas/Library/Mobile Documents/com~apple~CloudDocs/dev/2025/faceswapper-20251030"
+   git remote add origin https://github.com/YOUR_USERNAME/faceswapper-runpod.git
+   git push -u origin main
+
+
+2. SET UP DOCKER HUB (3 min)
+
+   Get token:
+   https://hub.docker.com/settings/security
+   → New Access Token
+   → Name: "GitHub Actions"
+   → Copy token
+
+   Add to GitHub:
+   https://github.com/YOUR_USERNAME/faceswapper-runpod/settings/secrets/actions
+   → New repository secret
+   → DOCKER_USERNAME = kaspamontana
+   → DOCKER_PASSWORD = [paste token]
+
+
+3. TRIGGER BUILD (1 min)
+
+   https://github.com/YOUR_USERNAME/faceswapper-runpod/actions
+   → "Build and Push Docker Image"
+   → "Run workflow"
+   → Wait 60-90 minutes
+
+
+4. AFTER BUILD COMPLETES
+
+   cd scripts
+   ./update_endpoint.sh
+   ./test_endpoint.sh "VIDEO_URL" "AVATAR_URL"
+
+
+WHAT'S CONFIGURED:
+------------------
+✓ Docker build (Wan2.2-Animate-14B)
+✓ Runpod handler + S3 upload
+✓ Webhook notifications
+✓ GitHub Actions workflow
+✓ Test scripts
+
+CREDENTIALS IN USE:
+------------------
+Runpod API: rpa_OSPY0BMF92K6JKMWOTMIJ6EJQHCY3FVNJBJBGEKM1td0zk
+Endpoint ID: eaj61xejeec2iw
+S3 Bucket: faceswap-outputs-kasparas
+Webhook: https://hook.eu2.make.com/nckpkeky1n2utqu5mp4lu48ikfgxkovy
+
+NEED HELP?
+----------
+See: docs/DEPLOYMENT_INSTRUCTIONS.md
+Or: DEPLOY_NOW.md
+
+========================================
