@@ -6,20 +6,22 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 
 # Install packages with retries and better error handling
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    for i in 1 2 3; do \
-        apt-get update && \
-        apt-get install -y --no-install-recommends \
-            python3 python3-pip python3-dev \
-            build-essential \
-            ffmpeg \
-            git \
-            wget \
-            curl \
-            ca-certificates && \
-        break || sleep 10; \
-    done && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        python3-dev \
+        build-essential \
+        ffmpeg \
+        git \
+        wget \
+        curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    python3 --version && \
+    pip3 --version
 
 WORKDIR /app
 RUN mkdir -p /models /tmp/processing
