@@ -1,0 +1,101 @@
+═══════════════════════════════════════════════════════
+  FINAL DEPLOYMENT STEPS - DO THIS NOW
+═══════════════════════════════════════════════════════
+
+BUILD IS RUNNING NOW!
+Build will push to: ghcr.io/antoniamontana/faceswapper-runpod:v2
+
+═══════════════════════════════════════════════════════
+STEP 1: WAIT FOR BUILD (20 minutes)
+═══════════════════════════════════════════════════════
+
+Monitor: https://github.com/antoniamontana/faceswapper-runpod/actions
+
+Wait for ✅ green checkmark (15-20 minutes)
+
+═══════════════════════════════════════════════════════
+STEP 2: MAKE IMAGE PUBLIC (2 minutes)
+═══════════════════════════════════════════════════════
+
+1. Go to: https://github.com/antoniamontana/faceswapper-runpod/pkgs/container/faceswapper-runpod
+
+2. Click "Package settings" (right sidebar)
+
+3. Scroll to "Danger Zone"
+
+4. Click "Change visibility"
+
+5. Select "Public"
+
+6. Type the repo name to confirm
+
+7. Click "I understand, change package visibility"
+
+═══════════════════════════════════════════════════════
+STEP 3: DEPLOY TO RUNPOD (5 minutes)
+═══════════════════════════════════════════════════════
+
+1. Go to: https://www.runpod.io/console/serverless
+
+2. Find your endpoint: "UGC FaceSwapper Endpoint" (ID: eaj61xejeec2iw)
+
+3. Click "Edit Endpoint"
+
+4. Update "Container Image" to:
+   ghcr.io/antoniamontana/faceswapper-runpod:v2
+
+5. Set "Container Disk" to: 50 GB
+
+6. Add Environment Variables:
+   AWS_ACCESS_KEY_ID = [your-aws-key]
+   AWS_SECRET_ACCESS_KEY = [your-aws-secret]
+   AWS_REGION = us-east-1
+   S3_BUCKET = faceswap-outputs-kasparas
+   WEBHOOK_URL = https://hook.eu2.make.com/nckpkeky1n2utqu5mp4lu48ikfgxkovy
+
+7. Click "Update Endpoint"
+
+8. Click "Deploy" (if needed)
+
+═══════════════════════════════════════════════════════
+STEP 4: TEST (5 minutes)
+═══════════════════════════════════════════════════════
+
+Run:
+cd scripts
+./test_endpoint.sh \
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" \
+  "https://randomuser.me/api/portraits/men/32.jpg"
+
+This returns a job ID.
+
+Check status:
+./check_status.sh JOB_ID
+
+Wait 30-40 minutes for FIRST RUN (model downloads)
+Subsequent runs: 2-5 minutes
+
+═══════════════════════════════════════════════════════
+STEP 5: VERIFY (2 minutes)
+═══════════════════════════════════════════════════════
+
+1. Check S3: faceswap-outputs-kasparas
+   Should see: test001_output.mp4
+
+2. Check Make.com webhook
+   Should receive completion notification
+
+3. Download and watch output video
+
+═══════════════════════════════════════════════════════
+DONE! 🎉
+═══════════════════════════════════════════════════════
+
+Total time: ~35 minutes
+- Build: 20 min
+- Setup: 10 min
+- Test: 5 min
+
+You're LIVE!
+
+═══════════════════════════════════════════════════════
