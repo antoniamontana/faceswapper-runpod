@@ -1,28 +1,16 @@
-FROM runpod/base:0.4.0-cuda11.8.0
+# Use EXISTING Wan2.2 image that already works!
+FROM ghcr.io/lum3on/wan22-runpod:latest
 
 WORKDIR /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    torch torchvision \
-    diffusers transformers \
-    opencv-python-headless \
-    Pillow numpy \
-    boto3 requests PyYAML \
-    huggingface-hub
+# Install ONLY what we need for our handler
+RUN pip install --no-cache-dir runpod boto3 requests PyYAML
 
-# Clone Wan2.2 repo
-RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2
-ENV PYTHONPATH=/app/Wan2.2:$PYTHONPATH
-
-# Copy application code
+# Copy our handler code
 COPY handler.py process.py utils.py config.yaml ./
 
-# Download model DURING BUILD (one-time, ~30 min)
-RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('Wan-AI/Wan2.2-Animate-14B', local_dir='/app/models/Wan2.2-Animate-14B')"
-
-# Set model path
-ENV MODEL_PATH=/app/models/Wan2.2-Animate-14B
-ENV CUDA_VISIBLE_DEVICES=0
+# Wan2.2 and model are ALREADY in the base image at /comfyui/models/
+ENV MODEL_PATH=/comfyui/models/
+ENV PYTHONPATH=/app:$PYTHONPATH
 
 CMD ["python", "-u", "handler.py"]
