@@ -13,10 +13,12 @@ RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2 && \
     test -f /app/Wan2.2/wan/modules/animate/preprocess/preprocess_data.py && \
     echo "✅ preprocess_data.py found" || echo "❌ preprocess_data.py NOT FOUND"
 
-# Install Wan2.2 core dependencies (base image has torch/cuda already)
+# Install Wan2.2 core dependencies
 WORKDIR /app/Wan2.2
 RUN echo "Installing core dependencies..." && \
     pip install --no-cache-dir \
+        torch \
+        torchvision \
         numpy \
         opencv-python-headless \
         pillow \
@@ -26,7 +28,7 @@ RUN echo "Installing core dependencies..." && \
         tqdm \
         einops && \
     echo "✅ Core dependencies installed" && \
-    python3 -c "import numpy; import cv2; import PIL; print('Dependencies verified successfully')"
+    python3 -c "import torch; import numpy; import cv2; import PIL; print(f'torch {torch.__version__}, numpy {numpy.__version__} - Dependencies verified')"
 
 # Copy our handler code
 WORKDIR /app
