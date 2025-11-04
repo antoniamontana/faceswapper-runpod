@@ -13,11 +13,14 @@ RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2 && \
     test -f /app/Wan2.2/wan/modules/animate/preprocess/preprocess_data.py && \
     echo "✅ preprocess_data.py found" || echo "❌ preprocess_data.py NOT FOUND"
 
-# Install Wan2.2 dependencies (base image already has torch/torchvision)
+# Install Wan2.2 dependencies
 WORKDIR /app/Wan2.2
-RUN echo "Checking existing torch..." && \
-    python3 -c "import torch; print(f'Found torch {torch.__version__}')" && \
-    echo "Installing additional dependencies..." && \
+RUN echo "Installing dependencies..." && \
+    pip install --no-cache-dir \
+        torch \
+        torchvision \
+        torchaudio \
+        --index-url https://download.pytorch.org/whl/cu121 && \
     pip install --no-cache-dir \
         numpy \
         opencv-python-headless \
@@ -27,8 +30,7 @@ RUN echo "Checking existing torch..." && \
         imageio \
         tqdm \
         einops && \
-    echo "✅ Dependencies installed" && \
-    python3 -c "import torch; import numpy; import cv2; import PIL; print(f'torch {torch.__version__}, numpy {numpy.__version__} - All verified')"
+    echo "✅ Dependencies installed"
 
 # Copy our handler code
 WORKDIR /app
