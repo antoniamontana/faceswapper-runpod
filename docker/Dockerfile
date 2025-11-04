@@ -17,9 +17,16 @@ RUN apt-get clean && \
 WORKDIR /app
 RUN mkdir -p /models /tmp/processing
 
+# Install PyTorch first with CUDA support
+RUN pip3 install --timeout=600 --retries=10 --no-cache-dir \
+    torch==2.1.0 torchvision==0.16.0 \
+    --extra-index-url https://download.pytorch.org/whl/cu118
+
+# Copy and install other requirements (without PyTorch line)
 COPY requirements.txt /app/
-RUN pip3 install --timeout=600 --retries=10 --no-cache-dir -r /app/requirements.txt || \
-    (sleep 30 && pip3 install --timeout=600 --retries=10 --no-cache-dir -r /app/requirements.txt)
+RUN grep -v "torch" /app/requirements.txt | grep -v "extra-index-url" > /app/requirements_filtered.txt && \
+    pip3 install --timeout=600 --retries=10 --no-cache-dir -r /app/requirements_filtered.txt || \
+    (sleep 30 && pip3 install --timeout=600 --retries=10 --no-cache-dir -r /app/requirements_filtered.txt)
 
 RUN pip3 install --timeout=600 --retries=10 --no-cache-dir flash-attn --no-build-isolation || echo "flash-attn skipped"
 
