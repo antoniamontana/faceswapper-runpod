@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt || true
 
 # Copy our handler code
 WORKDIR /app
-COPY handler.py process.py utils.py config.yaml ./
+COPY handler.py process.py utils.py ./
 
 # Model will be on network volume
 ENV MODEL_PATH=/runpod-volume/models/Wan2.2-Animate-14B
