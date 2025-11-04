@@ -1,0 +1,78 @@
+# UGC Face Swapper V1 MVP - Configuration Template
+# Copy this file to config.yaml and fill in your actual credentials
+# ⚠️ NEVER commit config.yaml to Git
+
+# ============================================
+# Runpod GPU Configuration
+# ============================================
+runpod:
+  api_key: "YOUR_RUNPOD_API_KEY"  # Get from https://www.runpod.io/console/user/settings
+  template_id: "YOUR_TEMPLATE_ID"
+  endpoint_id: "YOUR_ENDPOINT_ID"
+  endpoint_url: "https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/run"
+
+# ============================================
+# AWS S3 Storage Configuration
+# ============================================
+storage:
+  provider: "s3"
+  s3_bucket: "YOUR_S3_BUCKET_NAME"
+  s3_region: "us-east-1"
+  s3_access_key: "YOUR_AWS_ACCESS_KEY"
+  s3_secret_key: "YOUR_AWS_SECRET_KEY"
+  s3_output_prefix: "outputs/"
+
+# ============================================
+# Airtable Database Configuration
+# ============================================
+airtable:
+  api_key: "YOUR_AIRTABLE_API_KEY"  # Get from https://airtable.com/create/tokens
+  base_id: "YOUR_AIRTABLE_BASE_ID"
+  table_name: "Processing Queue"
+
+# ============================================
+# Webhook Configuration
+# ============================================
+webhook:
+  completion_url: "YOUR_MAKE_COM_WEBHOOK_URL"
+
+# ============================================
+# Video Processing Configuration
+# ============================================
+processing:
+  segments:
+    swap_1_start: 0
+    swap_1_end: 5
+    original_1_start: 5
+    original_1_end: 15
+    swap_2_start: 15
+    swap_2_end: 20
+    original_2_start: 20
+    original_2_end: 30
+
+  model_path: "/models/wan2.2-animate"
+  model_name: "wan2.2-animate-14b"
+
+  output_resolution: "1080p"
+  output_fps: 30
+  output_codec: "libx264"
+  output_bitrate: "3500k"
+
+  face_detection_confidence: 0.6
+  face_detection_backend: "retinaface"
+
+# ============================================
+# Error Handling Configuration
+# ============================================
+error_handling:
+  max_retries: 0
+  timeout_seconds: 900
+  failed_status_emoji: "🚩"
+
+# ============================================
+# Logging Configuration
+# ============================================
+logging:
+  level: "INFO"
+  format: "json"
+  include_timestamps: true

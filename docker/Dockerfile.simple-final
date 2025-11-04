@@ -1,0 +1,38 @@
+# ABSOLUTE MINIMAL DOCKERFILE - Avoid apt-get issues
+# Uses Python base with git already installed
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# Install only ffmpeg (critical for video processing)
+RUN apt-get update && apt-get install -y ffmpeg git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Python packages
+RUN pip install --no-cache-dir \
+    runpod>=1.3.0 \
+    boto3 \
+    requests \
+    PyYAML \
+    torch \
+    torchvision \
+    opencv-python-headless \
+    Pillow \
+    numpy
+
+# Clone Wan2.2 repo (code only)
+RUN git clone --depth 1 https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2
+
+# Add to Python path
+ENV PYTHONPATH=/app/Wan2.2:$PYTHONPATH
+
+# Copy application code
+COPY handler.py process.py utils.py config.yaml ./
+
+# Model will be on network volume
+ENV MODEL_PATH=/runpod-volume/models/Wan2.2-Animate-14B
+ENV CUDA_VISIBLE_DEVICES=0
+
+CMD ["python", "-u", "handler.py"]

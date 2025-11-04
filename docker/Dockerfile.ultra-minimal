@@ -1,0 +1,39 @@
+# ULTRA-MINIMAL DOCKERFILE - For Testing Network Volume Approach
+# Size: ~2GB (absolute minimum)
+# Model will be on network volume at /runpod-volume/models/
+
+FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# Install only essential system packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install only essential Python packages
+RUN pip install --no-cache-dir \
+    runpod>=1.3.0 \
+    boto3 \
+    requests \
+    PyYAML
+
+# Clone Wan2.2 repo (code only, ~100MB)
+RUN git clone --depth 1 https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2
+
+# Add Wan2.2 to Python path
+ENV PYTHONPATH=/app/Wan2.2:$PYTHONPATH
+
+# Copy application code
+COPY handler.py process.py utils.py config.yaml ./
+
+# Model will be on network volume
+ENV MODEL_PATH=/runpod-volume/models/Wan2.2-Animate-14B
+ENV CUDA_VISIBLE_DEVICES=0
+
+CMD ["python", "-u", "handler.py"]

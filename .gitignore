@@ -1,8 +1,13 @@
-# Credentials and secrets
+# Credentials and secrets - NEVER COMMIT THESE
 config/config.yaml
+docker/config.yaml
 *.env
 .env.local
 .env.*.local
+*secret*
+*credential*
+SESSION_HANDOFF.md
+READY_TO_LAUNCH.md
 
 # API keys
 *.key
