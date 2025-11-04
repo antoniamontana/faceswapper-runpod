@@ -16,14 +16,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Load configuration from file
-try:
-    with open('/app/config.yaml', 'r') as f:
-        CONFIG = yaml.safe_load(f)
-    logger.info("Configuration loaded successfully")
-except Exception as e:
-    logger.error(f"Failed to load config: {e}")
-    CONFIG = None
+# Configuration - all params come from event or environment variables
+CONFIG = {
+    'webhook': {
+        'completion_url': None  # Will use webhook_url from event
+    }
+}
+logger.info("Handler initialized - config comes from event/env vars")
 
 def handler(event):
     """
@@ -46,12 +45,6 @@ def handler(event):
         "error": "error message if failed"
     }
     """
-
-    if not CONFIG:
-        return {
-            "status": "failed",
-            "error": "Configuration not loaded"
-        }
 
     try:
         # Extract input data
