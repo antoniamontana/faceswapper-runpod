@@ -1,0 +1,24 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          cd docker
+          docker build -t ghcr.io/${{ github.repository_owner }}/faceswapper-runpod:latest .
+
+      - name: Push to GHCR
+        run: docker push ghcr.io/${{ github.repository_owner }}/faceswapper-runpod:latest

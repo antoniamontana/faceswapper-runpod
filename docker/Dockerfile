@@ -1,55 +1,28 @@
-# FINAL WORKING DOCKERFILE - Uses Runpod Network Volume for Models
-# Build size: ~8GB (no model!)
-# Model lives on Runpod network storage
-# Based on: https://github.com/lucidprogrammer/wan-video
-
-FROM runpod/pytorch:2.1.0-py3.11-cuda12.4.1-devel-ubuntu22.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PYTHONUNBUFFERED=1
-
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-        git \
-        ffmpeg \
-        libgl1-mesa-glx \
-        libglib2.0-0 \
-        wget \
-        curl && \
-    rm -rf /var/lib/apt/lists/*
+FROM runpod/base:0.4.0-cuda11.8.0
 
 WORKDIR /app
 
-# Install Python packages
+# Install Python dependencies
 RUN pip install --no-cache-dir \
-    runpod>=1.3.0 \
-    boto3 \
-    requests \
-    numpy \
-    PyYAML \
-    opencv-python \
-    Pillow \
-    huggingface-hub[cli] \
-    einops \
-    transformers \
-    diffusers \
-    accelerate \
-    omegaconf \
-    safetensors \
-    tqdm
+    torch torchvision \
+    diffusers transformers \
+    opencv-python-headless \
+    Pillow numpy \
+    boto3 requests PyYAML \
+    huggingface-hub
 
-# Clone Wan2.2 repo (code only, no model)
+# Clone Wan2.2 repo
 RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2
-
-# Add Wan2.2 to Python path
 ENV PYTHONPATH=/app/Wan2.2:$PYTHONPATH
 
 # Copy application code
 COPY handler.py process.py utils.py config.yaml ./
 
-# Model will be on network volume at /runpod-volume/models/
-ENV MODEL_PATH=/runpod-volume/models/Wan2.2-Animate-14B
+# Download model DURING BUILD (one-time, ~30 min)
+RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('Wan-AI/Wan2.2-Animate-14B', local_dir='/app/models/Wan2.2-Animate-14B')"
+
+# Set model path
+ENV MODEL_PATH=/app/models/Wan2.2-Animate-14B
 ENV CUDA_VISIBLE_DEVICES=0
 
 CMD ["python", "-u", "handler.py"]
