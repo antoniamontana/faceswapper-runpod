@@ -13,20 +13,20 @@ RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2 && \
     test -f /app/Wan2.2/wan/modules/animate/preprocess/preprocess_data.py && \
     echo "✅ preprocess_data.py found" || echo "❌ preprocess_data.py NOT FOUND"
 
-# Install Wan2.2 dependencies - FAIL BUILD IF THIS FAILS
+# Install Wan2.2 core dependencies (base image has torch/cuda already)
 WORKDIR /app/Wan2.2
-RUN if [ -f requirements_animate.txt ]; then \
-        echo "Installing from requirements_animate.txt..." && \
-        pip install --no-cache-dir -r requirements_animate.txt; \
-    elif [ -f requirements.txt ]; then \
-        echo "Installing from requirements.txt..." && \
-        pip install --no-cache-dir -r requirements.txt; \
-    else \
-        echo "Installing common dependencies manually..." && \
-        pip install --no-cache-dir numpy opencv-python pillow torch torchvision; \
-    fi && \
-    echo "✅ Dependencies installed" && \
-    python3 -c "import numpy; print(f'numpy {numpy.__version__} installed successfully')"
+RUN echo "Installing core dependencies..." && \
+    pip install --no-cache-dir \
+        numpy \
+        opencv-python-headless \
+        pillow \
+        scipy \
+        scikit-image \
+        imageio \
+        tqdm \
+        einops && \
+    echo "✅ Core dependencies installed" && \
+    python3 -c "import numpy; import cv2; import PIL; print('Dependencies verified successfully')"
 
 # Copy our handler code
 WORKDIR /app
