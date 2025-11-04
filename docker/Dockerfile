@@ -7,11 +7,15 @@ WORKDIR /app
 RUN pip install --no-cache-dir runpod boto3 requests PyYAML
 
 # Clone Wan2.2 standalone code (lum3on has it in ComfyUI, we need standalone)
-RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2
+RUN git clone https://github.com/Wan-Video/Wan2.2.git /app/Wan2.2 && \
+    ls -la /app/Wan2.2 && \
+    echo "Verifying critical files..." && \
+    test -f /app/Wan2.2/wan/modules/animate/preprocess/preprocess_data.py && \
+    echo "✅ preprocess_data.py found" || echo "❌ preprocess_data.py NOT FOUND"
 
 # Install Wan2.2 dependencies if needed
 WORKDIR /app/Wan2.2
-RUN pip install --no-cache-dir -r requirements.txt || true
+RUN pip install --no-cache-dir -r requirements_animate.txt || echo "Warning: requirements_animate.txt install had issues"
 
 # Copy our handler code
 WORKDIR /app
