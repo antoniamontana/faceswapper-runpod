@@ -126,8 +126,24 @@ def face_swap_full_video(video_path, avatar_path, job_id, model_path):
 
         # Step 1: Preprocessing with Wan2.2
         logger.info("Step 1/2: Running Wan2.2 preprocessing...")
+        # Find Wan2.2 installation - check multiple locations
+        wan_locations = [
+            '/app/Wan2.2',
+            '/workspace/Wan2.2',
+            '/opt/Wan2.2'
+        ]
+        wan_path = None
+        for location in wan_locations:
+            if os.path.exists(location):
+                wan_path = location
+                logger.info(f"Found Wan2.2 at: {wan_path}")
+                break
+
+        if not wan_path:
+            raise Exception("Wan2.2 not found. Please ensure it's cloned in /workspace or /app")
+
         preprocess_cmd = [
-            'python3', '/app/Wan2.2/wan/modules/animate/preprocess/preprocess_data.py',
+            'python3', f'{wan_path}/wan/modules/animate/preprocess/preprocess_data.py',
             '--ckpt_path', f'{model_path}/process_checkpoint',
             '--video_path', video_path,
             '--refer_path', avatar_path,
@@ -159,7 +175,7 @@ def face_swap_full_video(video_path, avatar_path, job_id, model_path):
         # Step 2: Generation (face-swap)
         logger.info("Step 2/2: Running Wan2.2 generation (face-swap)...")
         generate_cmd = [
-            'python3', '/app/Wan2.2/generate.py',
+            'python3', f'{wan_path}/generate.py',
             '--task', 'animate-14B',
             '--ckpt_dir', model_path,
             '--src_root_path', process_dir,
