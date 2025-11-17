@@ -7,7 +7,7 @@ import runpod
 import os
 import logging
 import traceback
-from process import process_video_job
+from process_simple import process_single_video
 
 # Configure logging
 logging.basicConfig(
@@ -88,9 +88,9 @@ def handler(event):
         logger.info(f"Video URL: {video_url}")
         logger.info(f"Avatar URL: {avatar_url}")
 
-        # Process video
-        result = process_video_job(
-            record_id=record_id,
+        # Process video with simplified processor (no segmentation!)
+        result = process_single_video(
+            job_id=record_id,
             video_url=video_url,
             avatar_url=avatar_url,
             config=CONFIG,
